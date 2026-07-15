@@ -3,7 +3,7 @@ import { ReactComponent as CopySVG } from '../svgs/copy.svg'
 import { ReactComponent as CopiedSVG } from '../svgs/copied.svg'
 import type { NodeMeta } from '../types'
 import { writeClipboard } from '../utils'
-import { JsonViewContext } from './json-view'
+import { ConfigContext } from './contexts'
 
 interface Props {
 	node: any
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function CopyButton({ node, nodeMeta }: Props) {
-	const { customizeCopy, CopyComponent, CopiedComponent } = useContext(JsonViewContext)
+	const { customizeCopy, CopyComponent, CopiedComponent } = useContext(ConfigContext)
 
 	const [copied, setCopied] = useState(false)
 

@@ -1,15 +1,21 @@
 import React, { useContext, useRef, useState } from 'react'
-import { JsonViewContext } from './json-view'
+import { ConfigContext } from './contexts'
 
 interface Props {
 	str: string
 	className: string
 	ctrlClick: ((event: React.MouseEvent) => void) | undefined
+	// When provided, truncation state is controlled by the caller (central store)
+	// so it survives virtualized unmount/remount. Falls back to local state.
+	truncated?: boolean
+	onToggleTruncated?: (next: boolean) => void
 }
 
-const LongString = React.forwardRef<HTMLSpanElement, Props>(({ str, className, ctrlClick }, ref) => {
-	let { collapseStringMode, collapseStringsAfterLength, customizeCollapseStringUI } = useContext(JsonViewContext)
-	const [truncated, setTruncated] = useState(true)
+const LongString = React.forwardRef<HTMLSpanElement, Props>(({ str, className, ctrlClick, truncated: truncatedProp, onToggleTruncated }, ref) => {
+	let { collapseStringMode, collapseStringsAfterLength, customizeCollapseStringUI } = useContext(ConfigContext)
+	const [truncatedLocal, setTruncatedLocal] = useState(true)
+	const truncated = truncatedProp ?? truncatedLocal
+	const setTruncated = (next: boolean) => (onToggleTruncated ? onToggleTruncated(next) : setTruncatedLocal(next))
 	const strRef = useRef<HTMLSpanElement>(null)
 
 	collapseStringsAfterLength = collapseStringsAfterLength > 0 ? collapseStringsAfterLength : 0

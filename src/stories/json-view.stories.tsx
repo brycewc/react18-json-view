@@ -487,6 +487,59 @@ export const LargeArray: StoryObj<TYPE_FC> = {
 	}
 }
 
+const genWideObject = (n: number) => Object.fromEntries(Array.from({ length: n }, (_, i) => [`key_${i}`, { id: i, name: `item ${i}`, active: i % 2 === 0, tags: [`t${i}`, `t${i + 1}`] }]))
+
+// ~10k nodes (deep + wide). Bounded height => windowed rendering.
+export const Virtualized: StoryObj<TYPE_FC> = {
+	args: {
+		src: genWideObject(2000),
+		height: 400,
+		collapsed: false,
+		displaySize: true
+	},
+	decorators: [
+		Story => (
+			<div style={{ width: 500 }}>
+				<Story />
+			</div>
+		)
+	]
+}
+
+// 100k flat array via ignoreLargeArray (no chunking) — stress test.
+export const VirtualizedFlatArray: StoryObj<TYPE_FC> = {
+	args: {
+		src: Array.from({ length: 100000 }, (_, i) => i),
+		ignoreLargeArray: true,
+		collapsed: false,
+		maxHeight: 400
+	},
+	decorators: [
+		Story => (
+			<div style={{ width: 500 }}>
+				<Story />
+			</div>
+		)
+	]
+}
+
+// Editable inside a virtualized viewport.
+export const VirtualizedEditable: StoryObj<TYPE_FC> = {
+	args: {
+		src: genWideObject(500),
+		editable: true,
+		height: 400,
+		collapsed: false
+	},
+	decorators: [
+		Story => (
+			<div style={{ width: 500 }}>
+				<Story />
+			</div>
+		)
+	]
+}
+
 export const CustomIcons: StoryObj<TYPE_FC> = {
 	args: {
 		src: {

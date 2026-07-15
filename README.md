@@ -72,6 +72,53 @@ import 'react18-json-view/src/style.css'
 | `CopyComponent` \/ `DoneComponent` \/ `CancelComponent` | `React.FC` \/ `React.Component` `<{ onClick: (event: React.MouseEvent) => void; className: string ; style: React.CSSProperties}>` | -                                                                                                   | Customize copy icon.                                                                                                                                                                           |
 | `CopiedComponent`                                       | `React.FC` \/ `React.Component` `<{ className: string; style: React.CSSProperties }>`                                             | -                                                                                                   | Customize copied icon.                                                                                                                                                                         |
 | `CustomOperation`                                       | `React.FC` \/ `React.Component` `<{ node: any }>`                                                                                 | -                                                                                                   | Custom Operation                                                                                                                                                                               |
+| `virtual`                                               | `boolean` \| `'auto'`                                                                                                             | `'auto'`                                                                                            | Windowed rendering. `'auto'` virtualizes only when the visible-row count exceeds `rowVirtualThreshold` or a `height`/`maxHeight` is set. `true` always windows; `false` forces the legacy inline render. |
+| `rowVirtualThreshold`                                   | `integer`                                                                                                                         | `100`                                                                                               | Under `virtual='auto'`, the visible-row count above which windowing turns on.                                                                                                                  |
+| `height`                                                | `number` \| `string`                                                                                                             | -                                                                                                   | Fixed height of the scroll viewport (enables windowing).                                                                                                                                        |
+| `maxHeight`                                             | `number` \| `string`                                                                                                             | `'70vh'` when windowed and no `height`                                                              | Grow-to-content up to this height, then scroll.                                                                                                                                                |
+| `estimatedRowHeight`                                    | `integer`                                                                                                                         | `20`                                                                                                | Estimated row height (px) used before a row is measured.                                                                                                                                       |
+| `overscan`                                              | `integer`                                                                                                                         | `8`                                                                                                 | Number of rows rendered beyond the viewport on each side.                                                                                                                                      |
+
+### Virtualization
+
+Since **v0.3**, the tree is rendered from a flattened list of visible rows, and large documents are
+windowed with [`@tanstack/react-virtual`](https://tanstack.com/virtual) so only the rows in view are
+mounted. This keeps rendering and interaction fast on documents with tens of thousands of nodes.
+
+By default (`virtual='auto'`) small/medium documents render inline exactly as before; windowing turns on
+automatically once the visible-row count exceeds `rowVirtualThreshold`, or as soon as you set a `height`
+or `maxHeight`. When windowed, the component becomes a bounded, scrollable box.
+
+```tsx
+// Explicit bounded viewport — always windowed
+<JsonView src={hugeData} height={400} />
+
+// Grow up to 60vh, then scroll
+<JsonView src={hugeData} maxHeight="60vh" />
+
+// Opt out of windowing entirely (legacy inline rendering)
+<JsonView src={data} virtual={false} />
+```
+
+Notes:
+
+- Windowing is **client-only**. Under SSR, small documents render inline (safe to hydrate); force
+  `virtual={false}` if you server-render very large documents.
+- A node passed to `customizeNode` that returns a React element/component renders as a single measured
+  row; its own subtree is not internally windowed.
+
+#### Migration from v0.2
+
+`v0.3` is a breaking (major) change of the rendering internals:
+
+- **Bounded height by default for large data.** Once a document is large enough to virtualize, the
+  component renders inside a scroll container instead of growing to full content height. Pass
+  `virtual={false}` to restore the old unbounded layout.
+- **`onCollapse` semantics fixed.** It no longer fires on mount, and `isCollapsing` is now `true` when a
+  node is being collapsed (previously the flag was inverted). It fires only on user toggles.
+- The recursive DOM (`.jv-indent` blocks, one `.json-view--pair` per key) is replaced by a flat list of
+  `.jv-row` elements indented via `padding-left`. `onEdit`/`onDelete`/`onAdd`/`onChange` payloads
+  (including `depth`, `parentPath`, `indexOrName`, `parentType`) are unchanged.
 
 ### Collapsed function
 
