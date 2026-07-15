@@ -31,6 +31,20 @@
 .json-view .jv-indent {
 	padding-left: 1em;
 }
+/* Flattened renderer: each visible line is a .jv-row; nesting is expressed via
+   inline padding-left (depth - 1)em instead of nested .jv-indent blocks. */
+.json-view .jv-row {
+	display: block;
+}
+/* Virtualized scroll container + absolute-positioned sizer. min-width:max-content
+   lets deeply-indented / long rows scroll horizontally together. */
+.json-view.jv-scroll {
+	overflow: auto;
+}
+.json-view .jv-sizer {
+	position: relative;
+	min-width: max-content;
+}
 .json-view .jv-chevron {
 	display: inline-block;
 	vertical-align: -20%;
@@ -77,8 +91,8 @@
 	text-decoration-line: line-through;
 }
 
-:is(.json-view:hover, .json-view--pair:hover) > :is(.json-view--copy, .json-view--edit),
-:is(.json-view:hover, .json-view--pair:hover) > .json-view--link svg {
+:is(.json-view:hover, .json-view--pair:hover, .jv-row:hover) > :is(.json-view--copy, .json-view--edit),
+:is(.json-view:hover, .json-view--pair:hover, .jv-row:hover) > .json-view--link svg {
 	display: inline-block;
 }
 
