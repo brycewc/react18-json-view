@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function VirtualList({ rows, flagsFor, className, style, height, maxHeight, estimatedRowHeight, overscan }: Props) {
-	const parentRef = useRef<HTMLDivElement>(null)
+	const parentRef = useRef<HTMLElement>(null)
 	const virtualizer = useVirtualizer({
 		count: rows.length,
 		getScrollElement: () => parentRef.current,
@@ -26,8 +26,11 @@ export default function VirtualList({ rows, flagsFor, className, style, height, 
 	const items = virtualizer.getVirtualItems()
 
 	return (
-		<div ref={parentRef} className={className + ' jv-scroll'} style={{ overflow: 'auto', height, maxHeight, ...style }}>
+		// Root is <code> to match the non-virtualized path so the UA monospace font
+		// applies identically in both modes.
+		<code ref={parentRef as React.RefObject<HTMLElement>} className={className + ' jv-scroll'} style={{ overflow: 'auto', height, maxHeight, ...style }}>
 			<div className="jv-sizer" style={{ height: virtualizer.getTotalSize(), position: 'relative', minWidth: 'max-content' }}>
+				{/* rows */}
 				{items.map(vi => {
 					const row = rows[vi.index]
 					const flags = flagsFor(row)
@@ -43,6 +46,6 @@ export default function VirtualList({ rows, flagsFor, className, style, height, 
 					)
 				})}
 			</div>
-		</div>
+		</code>
 	)
 }
