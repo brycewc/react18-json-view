@@ -67,7 +67,8 @@
 		"vitest": "^0.34.6"
 	},
 	"peerDependencies": {
-		"react": ">=16.8.0"
+		"react": ">=16.8.0",
+		"react-dom": ">=16.8.0"
 	},
 	"lint-staged": {
 		"**/*": "prettier --write --ignore-unknown"
