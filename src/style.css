@@ -128,6 +128,15 @@
 	--json-boolean: #0000ff;
 	--json-null: #0000ff;
 }
+.json-view_vscode-modern {
+	color: #3b3b3b;
+	--json-property: #0451a5;
+	--json-index: #098658;
+	--json-number: #098658;
+	--json-string: #a31515;
+	--json-boolean: #0000ff;
+	--json-null: #0000ff;
+}
 .json-view_atom {
 	color: #383a42;
 	--json-property: #e45649;

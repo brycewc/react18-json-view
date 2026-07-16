@@ -18,15 +18,16 @@ const cssText = `.json-view {
   --json-null: #dc155e;
 }`
 
-type Theme = 'default' | 'a11y' | 'github' | 'vscode' | 'atom' | 'winter-is-coming' | 'vitesse'
+type Theme = 'default' | 'a11y' | 'github' | 'vscode' | 'vscode-modern' | 'atom' | 'winter-is-coming' | 'vitesse'
 
-const themes: Theme[] = ['default', 'a11y', 'github', 'vscode', 'atom', 'winter-is-coming', 'vitesse']
+const themes: Theme[] = ['default', 'a11y', 'github', 'vscode', 'vscode-modern', 'atom', 'winter-is-coming', 'vitesse']
 
 const bgColors: Record<Theme, string> = {
 	default: '#ffffff',
 	a11y: '#fefefe',
 	github: '#ffffff',
 	vscode: '#fefefe',
+	'vscode-modern': '#ffffff',
 	atom: '#ffffff',
 	'winter-is-coming': '#ffffff',
 	vitesse: '#ffffff'
@@ -37,6 +38,7 @@ const bgColors_dark: Record<Theme, string> = {
 	a11y: '#2b2b2b',
 	github: '#24292e',
 	vscode: '#1e1e1e',
+	'vscode-modern': '#1f1f1f',
 	atom: '#282c34',
 	'winter-is-coming': '#011627',
 	vitesse: '#121212'
