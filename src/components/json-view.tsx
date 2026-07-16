@@ -57,6 +57,10 @@ export interface JsonViewProps {
 	maxHeight?: number | string
 	estimatedRowHeight?: number
 	overscan?: number
+	// Virtualize inside an existing scroll container instead of the library's own
+	// scroll box: pass a ref to that element. When set, height/maxHeight and the
+	// default 70vh cap are ignored and the referenced element owns scrolling.
+	scrollRef?: React.RefObject<HTMLElement | null>
 
 	CopyComponent?: Config['CopyComponent']
 	CopiedComponent?: Config['CopiedComponent']
@@ -114,6 +118,7 @@ export default function JsonView({
 	maxHeight,
 	estimatedRowHeight = 20,
 	overscan = 8,
+	scrollRef,
 
 	CopyComponent,
 	CopiedComponent,
@@ -314,7 +319,9 @@ export default function JsonView({
 	const rootClassName = 'json-view' + (dark ? ' dark' : '') + (theme && theme !== 'default' ? ' json-view_' + theme : '') + (className ? ' ' + className : '')
 
 	const shouldVirtual = virtual === false ? false : virtual === true ? true : rows.length > rowVirtualThreshold || height != null || maxHeight != null
-	const resolvedMaxHeight = maxHeight != null ? maxHeight : shouldVirtual && height == null ? '70vh' : undefined
+	// A consumer-supplied scroll container owns scrolling, so skip the self-scroll
+	// box sizing (height/maxHeight and the 70vh fallback) in that mode.
+	const resolvedMaxHeight = scrollRef != null ? undefined : maxHeight != null ? maxHeight : shouldVirtual && height == null ? '70vh' : undefined
 
 	return (
 		<ConfigContext.Provider value={config}>
@@ -325,10 +332,11 @@ export default function JsonView({
 						flagsFor={flagsFor}
 						className={rootClassName}
 						style={style}
-						height={height}
+						height={scrollRef != null ? undefined : height}
 						maxHeight={resolvedMaxHeight}
 						estimatedRowHeight={estimatedRowHeight}
 						overscan={overscan}
+						scrollRef={scrollRef}
 					/>
 				) : (
 					<code className={rootClassName} style={style}>
