@@ -137,6 +137,15 @@
 	--json-boolean: #0000ff;
 	--json-null: #0000ff;
 }
+.json-view_vscode-2026 {
+	color: #1f2328;
+	--json-property: #116329;
+	--json-index: #0550ae;
+	--json-number: #0550ae;
+	--json-string: #0a3069;
+	--json-boolean: #0550ae;
+	--json-null: #0550ae;
+}
 .json-view_atom {
 	color: #383a42;
 	--json-property: #e45649;
